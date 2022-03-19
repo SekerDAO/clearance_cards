@@ -4,10 +4,8 @@ pragma solidity ^0.8.6;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./interfaces/IWandConjuror.sol";
-import "./interfaces/IWands.sol";
 
-contract Wand is ERC721URIStorage, IWands, Ownable {
+contract ClearanceCard is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 

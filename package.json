@@ -1,5 +1,5 @@
 {
-  "name": "GuildWand",
+  "name": "Seker Factory Clearance Cards",
   "version": "1.0.0",
   "description": "",
   "directories": {
@@ -21,7 +21,7 @@
   "repository": {
     "type": "git"
   },
-  "author": "jan-felix.schwarz@gnosis.io",
+  "author": "info@sekerfactory.com",
   "license": "LGPL-3.0+",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "2.0.0",

@@ -117,17 +117,15 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
                     Base64.encode(
                         bytes(
                             abi.encodePacked(
-                                '{"name":"',
-                                "name",
-                                '", "description":"Seker Factory Cards."', 
+                                '{"name":"name",',
+                                '"description":"Seker Factory Cards.",', 
                                 '"attributes": ',
                                 '[{"trait_type":"Level","value":"',
-                                //string(abi.encodePacked(level)),
                                 Strings.toString(level),
-                                '"}]',
+                                '"}],',
                                 '"image":"',
                                 imgURI, 
-                                '"}"'
+                                '"}'
                             )
                         )
                     )

@@ -49,11 +49,14 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
         emit CardLevelUp(_id, _levels);
     }
 
-    function levelUpCardBatch(uint256 _id, uint256 _levels) public onlyOwner {
-        require(cardLevels[_id] + _levels <= 10, "max level is 10");
-        require(_exists(_id), "nonexistent id");
-        cardLevels[_id] += _levels;
-        emit CardLevelUp(_id, _levels);
+    function levelUpCardBatch(uint256[] memory _ids, uint256[] memory _levels) public onlyOwner {
+        require(_ids.length == _levels.length, "length missmatch");
+        for(uint256 i=0; i<_ids.length; i++) {
+            require(cardLevels[_ids[i]] + _levels[i] <= 10, "max level is 10");
+            require(_exists(_ids[i]), "nonexistent id");
+            cardLevels[_ids[i]] += _levels[i];
+            emit CardLevelUp(_ids[i], _levels[i]);
+        }
     }
 
     function levelDownCard(uint256 _id, uint256 _levels) public onlyOwner {
@@ -63,11 +66,14 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
         emit CardLevelDown(_id, _levels);
     }
 
-    function levelDownCardBatch(uint256 _id, uint256 _levels) public onlyOwner {
-        require(cardLevels[_id] - _levels >= 0, "min level is 0");
-        require(_exists(_id), "nonexistent id");
-        cardLevels[_id] -= _levels;
-        emit CardLevelDown(_id, _levels);
+    function levelDownCardBatch(uint256[] memory _ids, uint256[] memory _levels) public onlyOwner {
+        require(_ids.length == _levels.length, "length missmatch");
+        for(uint256 i=0; i<_ids.length; i++) {
+            require(cardLevels[_ids[i]] - _levels[i] >= 0, "min level is 0");
+            require(_exists(_ids[i]), "nonexistent id");
+            cardLevels[_ids[i]] -= _levels[i];
+            emit CardLevelDown(_ids[i], _levels[i]);
+        }
     }
 
     function cardLevel(uint256 _id) public view returns (uint256) {

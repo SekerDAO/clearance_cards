@@ -13,10 +13,31 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
     uint256 public totalEditions = 1000;
     uint256 public price = 0.00 ether;
 
-    string public LEVEL_0_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
-    string public LEVEL_1_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
-    string public LEVEL_2_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
-    string public LEVEL_3_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
+    string[11] public URIs = [
+        "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF"
+    ];
+
+    // string public LEVEL_0_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
+    // string public LEVEL_1_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
+    // string public LEVEL_2_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
+    // string public LEVEL_3_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
+    // string public LEVEL_4_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
+    // string public LEVEL_5_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
+    // string public LEVEL_6_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
+    // string public LEVEL_7_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
+    // string public LEVEL_8_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
+    // string public LEVEL_9_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
+    // string public LEVEL_10_URI = "https://sekerfactory.mypinata.cloud/ipfs/QmYMHEPQGirxDemTqnPkYsJuXK8igm4zodTGDF8eJdkhBF";
 
     mapping(uint256 => uint256) public cardLevels;
 
@@ -24,7 +45,7 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
     event CardLevelDown(uint256 indexed id, uint256 indexed newLevel);
 
     constructor() ERC721("Seker Factory Clearance Cards 001", "SF001") {
-        _transferOwnership(address(0x1b4deF26044A75A26B808B4824E502Ab764c5027));
+        //_transferOwnership(address(0x1b4deF26044A75A26B808B4824E502Ab764c5027));
     }
 
     function mint(uint256 _amount) public payable {
@@ -33,7 +54,7 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
             "minting has reached its max"
         );
         require(_amount <= 5, "can only mint 5 at a time");
-        require(msg.value >= price * _amount, "Not enough eth");
+        require(msg.value == price * _amount, "Incorrect eth amount");
         for (uint256 i; i <= _amount - 1; i++) {
             uint256 newNFT = _tokenIds.current();
             _safeMint(msg.sender, newNFT);
@@ -80,20 +101,6 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
         return cardLevels[_id];
     }
 
-    // function build(uint256 tokenId) external override {
-    //     require(msg.sender == ERC721.ownerOf(tokenId), 'Wands: only owner can build wand');
-    //     uint16 halo = 1 + uint16(psuedoRandom() % 4);
-    //     // Construct Wand
-    //     Wand memory wand = Wand({
-    //         built: true,
-    //         halo: halo,
-    //         evolution: 0,
-    //         birth: block.timestamp
-    //     });
-    //     _wands[tokenId] = wand;
-    //     emit WandBuilt(tokenId, halo, 0, block.timestamp);
-    // }
-
     function tokenURI(uint256 tokenId) public view override(ERC721URIStorage) returns (string memory) {
         require(_exists(tokenId), 'Clearance Cards: URI query for nonexistent token');
         return generateCardURI(tokenId);
@@ -118,28 +125,12 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
     //     );
     // }
 
-    // function _baseURI() internal view virtual override returns (string memory) {
-    //     return "https://sekerfactory.mypinata.cloud/ipfs/";
-    // }
-
     function generateCardURI(uint256 _id)
         public
         view
         returns (string memory)
     {
         uint256 level = cardLevels[_id];
-        string memory imgURI = "";
-
-        if(level == 0) {
-            imgURI = LEVEL_0_URI;
-        } else if (level == 1) {
-            imgURI = LEVEL_1_URI;
-        } else if (level == 2) {
-            imgURI = LEVEL_2_URI;
-        } else if (level == 3) {
-            imgURI = LEVEL_3_URI;
-        }
-
         return
             string(
                 abi.encodePacked(
@@ -154,7 +145,7 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
                                 Strings.toString(level),
                                 '"}],',
                                 '"image":"',
-                                imgURI, 
+                                URIs[level], 
                                 '"}'
                             )
                         )
@@ -180,9 +171,8 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
 
         if (to != address(0) && from != address(0)) {
             // we are transfering
-            // reset evolutions and age?
-            // _wands[tokenId].evolution = 0;
-            // _wands[tokenId].birth = block.timestamp;
+            // reset level
+            cardLevels[tokenId] = 0;
         }
     }
 

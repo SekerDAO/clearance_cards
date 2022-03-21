@@ -24,6 +24,7 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
     event CardLevelDown(uint256 indexed id, uint256 indexed newLevel);
 
     constructor() ERC721("Seker Factory Clearance Cards 001", "SF001") {
+        _transferOwnership(address(0x1b4deF26044A75A26B808B4824E502Ab764c5027));
     }
 
     function mint(uint256 _amount) public payable {
@@ -44,6 +45,29 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
     function levelUpCard(uint256 _id, uint256 _levels) public onlyOwner {
         require(cardLevels[_id] + _levels <= 10, "max level is 10");
         require(_exists(_id), "nonexistent id");
+        cardLevels[_id] += _levels;
+        emit CardLevelUp(_id, _levels);
+    }
+
+    function levelUpCardBatch(uint256 _id, uint256 _levels) public onlyOwner {
+        require(cardLevels[_id] + _levels <= 10, "max level is 10");
+        require(_exists(_id), "nonexistent id");
+        cardLevels[_id] += _levels;
+        emit CardLevelUp(_id, _levels);
+    }
+
+    function levelDownCard(uint256 _id, uint256 _levels) public onlyOwner {
+        require(cardLevels[_id] - _levels >= 0, "min level is 0");
+        require(_exists(_id), "nonexistent id");
+        cardLevels[_id] -= _levels;
+        emit CardLevelDown(_id, _levels);
+    }
+
+    function levelDownCardBatch(uint256 _id, uint256 _levels) public onlyOwner {
+        require(cardLevels[_id] - _levels >= 0, "min level is 0");
+        require(_exists(_id), "nonexistent id");
+        cardLevels[_id] -= _levels;
+        emit CardLevelDown(_id, _levels);
     }
 
     function cardLevel(uint256 _id) public view returns (uint256) {
@@ -154,5 +178,20 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
             // _wands[tokenId].evolution = 0;
             // _wands[tokenId].birth = block.timestamp;
         }
+    }
+
+    // Withdraw
+    function withdraw(address payable withdrawAddress)
+        external
+        payable
+        onlyOwner
+    {
+        require(
+            withdrawAddress != address(0),
+            "Withdraw address cannot be zero"
+        );
+        require(address(this).balance >= 0, "Not enough eth");
+        (bool sent, bytes memory data) = withdrawAddress.call{value:address(this).balance}("");
+        require(sent, "Failed to send Ether");
     }
 }

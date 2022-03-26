@@ -27,14 +27,14 @@ describe("ClearanceCard001", async () => {
       const { clearanceCard } = await baseSetup();
       await clearanceCard.mint(1, {value: etherValue})
       const uri = await clearanceCard.tokenURI(0);
-      expect(uri).to.equal("data:application/json;base64,eyJuYW1lIjoibmFtZSIsImRlc2NyaXB0aW9uIjoiU2VrZXIgRmFjdG9yeSBDYXJkcy4iLCJhdHRyaWJ1dGVzIjogW3sidHJhaXRfdHlwZSI6IkxldmVsIiwidmFsdWUiOiIwIn1dLCJpbWFnZSI6Imh0dHBzOi8vc2VrZXJmYWN0b3J5Lm15cGluYXRhLmNsb3VkL2lwZnMvUW1ZTUhFUFFHaXJ4RGVtVHFuUGtZc0p1WEs4aWdtNHpvZFRHREY4ZUpka2hCRiJ9");
+      expect(uri).to.equal("data:application/json;base64,eyJuYW1lIjoiU2VrZXIgRmFjdG9yeSBDbGVhcmFuY2UgQ2FyZCAwMDEiLCJkZXNjcmlwdGlvbiI6Ik1lbWJlcnNoaXAgdG8gdGhlIFNla2VyIEZhY3RvcnkgMDAxIERBTy4iLCJhdHRyaWJ1dGVzIjogW3sidHJhaXRfdHlwZSI6IkxldmVsIiwidmFsdWUiOiIwIn1dLCJpbWFnZSI6Imh0dHBzOi8vc2VrZXJmYWN0b3J5Lm15cGluYXRhLmNsb3VkL2lwZnMvUW1Va3V5eHlMUjlVc2tpaEJjS0Jwa3hIVjVQdXptdUNOd3AxalB0eTgxMVB3USJ9");
     });
 
     it.skip("can't mint if value too low", async () => {
       const { clearanceCard } = await baseSetup();
       await clearanceCard.mint(1, {value: etherValue})
       const uri = await clearanceCard.tokenURI(0);
-      expect(uri).to.equal("data:application/json;base64,eyJuYW1lIjoibmFtZSIsImRlc2NyaXB0aW9uIjoiU2VrZXIgRmFjdG9yeSBDYXJkcy4iLCJhdHRyaWJ1dGVzIjogW3sidHJhaXRfdHlwZSI6IkxldmVsIiwidmFsdWUiOiIwIn1dLCJpbWFnZSI6Imh0dHBzOi8vc2VrZXJmYWN0b3J5Lm15cGluYXRhLmNsb3VkL2lwZnMvUW1ZTUhFUFFHaXJ4RGVtVHFuUGtZc0p1WEs4aWdtNHpvZFRHREY4ZUpka2hCRiJ9");
+      expect(uri).to.equal("data:application/json;base64,eyJuYW1lIjoiU2VrZXIgRmFjdG9yeSBDbGVhcmFuY2UgQ2FyZCAwMDEiLCJkZXNjcmlwdGlvbiI6Ik1lbWJlcnNoaXAgdG8gdGhlIFNla2VyIEZhY3RvcnkgMDAxIERBTy4iLCJhdHRyaWJ1dGVzIjogW3sidHJhaXRfdHlwZSI6IkxldmVsIiwidmFsdWUiOiIwIn1dLCJpbWFnZSI6Imh0dHBzOi8vc2VrZXJmYWN0b3J5Lm15cGluYXRhLmNsb3VkL2lwZnMvUW1Va3V5eHlMUjlVc2tpaEJjS0Jwa3hIVjVQdXptdUNOd3AxalB0eTgxMVB3USJ9");
     });
 
     it("can mint batch", async () => {
@@ -53,7 +53,7 @@ describe("ClearanceCard001", async () => {
       const { clearanceCard } = await baseSetup();
       await clearanceCard.mint(1, {value: etherValueBatch})
       await clearanceCard.levelUpCard(0, 1);
-      const level = await clearanceCard.cardLevel(0);
+      const level = await clearanceCard.cardLevels(0);
       expect(level).to.equal(1);
     });
 
@@ -61,15 +61,15 @@ describe("ClearanceCard001", async () => {
       const { clearanceCard } = await baseSetup();
       await clearanceCard.mint(5, {value: etherValueBatch})
       await clearanceCard.levelUpCardBatch([0,1,2,3,4], [1,1,1,1,1]);
-      let level = await clearanceCard.cardLevel(0);
+      let level = await clearanceCard.cardLevels(0);
       expect(level).to.equal(1);
-      level = await clearanceCard.cardLevel(1);
+      level = await clearanceCard.cardLevels(1);
       expect(level).to.equal(1);
-      level = await clearanceCard.cardLevel(2);
+      level = await clearanceCard.cardLevels(2);
       expect(level).to.equal(1);
-      level = await clearanceCard.cardLevel(3);
+      level = await clearanceCard.cardLevels(3);
       expect(level).to.equal(1);
-      level = await clearanceCard.cardLevel(4);
+      level = await clearanceCard.cardLevels(4);
       expect(level).to.equal(1);
     });
 
@@ -89,6 +89,9 @@ describe("ClearanceCard001", async () => {
     });
 
     it("can't level down card past 0", async () => {
+    });
+
+    it("resets level to 0 on transfer", async () => {
     });
   });
 });

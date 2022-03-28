@@ -10,8 +10,9 @@ import "base64-sol/base64.sol";
 contract ClearanceCard001 is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
-    uint256 public totalEditions = 1000;
-    uint256 public price = 0.00 ether;
+    uint256 public totalEditions = 2000;
+    uint256 public daoReserve = 200;
+    uint256 public price = 0.2 ether;
 
     string[11] public URIs = [
         "https://sekerfactory.mypinata.cloud/ipfs/QmUkuyxyLR9UskihBcKBpkxHV5PuzmuCNwp1jPty811PwQ",
@@ -29,11 +30,11 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
 
     mapping(uint256 => uint256) public cardLevels;
 
-    event CardLevelUp(uint256 indexed id, uint256 indexed newLevel);
-    event CardLevelDown(uint256 indexed id, uint256 indexed newLevel);
+    event CardLevelUp(uint256 indexed id, uint256 indexed levels, uint256 indexed newLevel);
+    event CardLevelDown(uint256 indexed id, uint256 indexed levels, uint256 indexed newLevel);
 
     constructor() ERC721("Seker Factory Clearance Cards 001", "SF001") {
-        //_transferOwnership(address(0x7735b940d673344845aC239CdDddE1D73b5d5627));
+        _transferOwnership(address(0x7735b940d673344845aC239CdDddE1D73b5d5627));
     }
 
     function mint(uint256 _amount) public payable {
@@ -51,11 +52,26 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
         }
     }
 
+    function mintDAO(uint256 _amount) public onlyOwner {
+        require(
+            Counters.current(_tokenIds) <= totalEditions,
+            "minting has reached its max"
+        );
+        for (uint256 i; i <= _amount - 1; i++) {
+            require(daoReserve > 0, "dao reserve fully minted");
+            uint256 newNFT = _tokenIds.current();
+            _safeMint(msg.sender, newNFT);
+            _tokenIds.increment();
+            cardLevels[newNFT] = 10;
+            daoReserve--;
+        }
+    }
+
     function levelUpCard(uint256 _id, uint256 _levels) public onlyOwner {
         require(cardLevels[_id] + _levels <= 10, "max level is 10");
         require(_exists(_id), "nonexistent id");
         cardLevels[_id] += _levels;
-        emit CardLevelUp(_id, _levels);
+        emit CardLevelUp(_id, _levels, cardLevels[_id]);
     }
 
     function levelUpCardBatch(uint256[] memory _ids, uint256[] memory _levels) public onlyOwner {
@@ -64,24 +80,22 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
             require(cardLevels[_ids[i]] + _levels[i] <= 10, "max level is 10");
             require(_exists(_ids[i]), "nonexistent id");
             cardLevels[_ids[i]] += _levels[i];
-            emit CardLevelUp(_ids[i], _levels[i]);
+            emit CardLevelUp(_ids[i], _levels[i], cardLevels[_ids[i]]);
         }
     }
 
     function levelDownCard(uint256 _id, uint256 _levels) public onlyOwner {
-        require(cardLevels[_id] - _levels >= 0, "min level is 0");
         require(_exists(_id), "nonexistent id");
         cardLevels[_id] -= _levels;
-        emit CardLevelDown(_id, _levels);
+        emit CardLevelDown(_id, _levels, cardLevels[_id]);
     }
 
     function levelDownCardBatch(uint256[] memory _ids, uint256[] memory _levels) public onlyOwner {
         require(_ids.length == _levels.length, "length missmatch");
         for(uint256 i=0; i<_ids.length; i++) {
-            require(cardLevels[_ids[i]] - _levels[i] >= 0, "min level is 0");
             require(_exists(_ids[i]), "nonexistent id");
             cardLevels[_ids[i]] -= _levels[i];
-            emit CardLevelDown(_ids[i], _levels[i]);
+            emit CardLevelDown(_ids[i], _levels[i], cardLevels[_ids[i]]);
         }
     }
 
@@ -103,14 +117,23 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
                     Base64.encode(
                         bytes(
                             abi.encodePacked(
-                                '{"name":"Seker Factory Clearance Card 001",',
-                                '"description":"Membership to the Seker Factory 001 DAO.",', 
+                                '{"name":"Seker Factory 001 - DAO Member",',
+                                '"description":"Membership to the Seker Factory 001 DAO. Holding this card secures your membership status and offers voting rights on certain proposals related to the 001 Los Angeles Factory. Level up this card to receive more perks and governance rights within the 001 DAO.",',
                                 '"attributes": ',
-                                '[{"trait_type":"Level","value":"',
+                                '[',
+                                '{"trait_type":"Level","value":"',
                                 Strings.toString(level),
-                                '"}],',
+                                '"},',
+                                '{"trait_type":"Membership Number","value":"',
+                                Strings.toString(_id),
+                                '/1000'
+                                '"}',
+                                '],',
                                 '"image":"',
                                 URIs[level], 
+                                '",',
+                                '"animation_url":"',
+                                URIs[level],
                                 '"}'
                             )
                         )
@@ -125,14 +148,6 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
         uint256 tokenId
     ) internal virtual override {
         super._beforeTokenTransfer(from, to, tokenId);
-
-        if (from == address(0)) {
-            // we are minting
-        }
-
-        if (to == address(0)) {
-            // we are burning
-        }
 
         if (to != address(0) && from != address(0)) {
             // we are transfering
@@ -152,7 +167,7 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
             "Withdraw address cannot be zero"
         );
         require(address(this).balance >= 0, "Not enough eth");
-        (bool sent, bytes memory data) = withdrawAddress.call{value:address(this).balance}("");
+        (bool sent, ) = withdrawAddress.call{value:address(this).balance}("");
         require(sent, "Failed to send Ether");
     }
 }

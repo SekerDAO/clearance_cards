@@ -6,7 +6,7 @@ const ZeroState =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
 const ZeroAddress = "0x0000000000000000000000000000000000000000";
 const FirstAddress = "0x0000000000000000000000000000000000000001";
-const etherValue = ethers.utils.parseEther("0.2");
+const etherValue = ethers.utils.parseEther("0.15");
 const etherValueBatch = ethers.utils.parseEther("1");
 const etherValueBatchHigh = ethers.utils.parseEther("1.2");
 const etherValueLow = ethers.utils.parseEther("0.19");
@@ -24,7 +24,7 @@ describe("ClearanceCard001", async () => {
   const [user1, user2] = waffle.provider.getWallets();
 
   describe("NFT", async () => {
-    it.only("should mint NFT with correct URI", async () => {
+    it("should mint NFT with correct URI", async () => {
       const { clearanceCard } = await baseSetup();
       await clearanceCard.mint(1, {value: etherValue})
       const uri = await clearanceCard.tokenURI(0);
@@ -48,19 +48,19 @@ describe("ClearanceCard001", async () => {
       await expect(clearanceCard.mint(6, {value: etherValueBatchHigh})).to.be.revertedWith("can only mint 5 at a time");
     });
 
-    it.skip("owner can level up card with correct URI", async () => {
+    it.only("owner can level up card with correct URI", async () => {
       const { clearanceCard } = await baseSetup();
-      await clearanceCard.mint(1, {value: etherValueBatch})
+      await clearanceCard.mint(1, {value: etherValue})
       await clearanceCard.levelUpCard(0, 1);
       let level = await clearanceCard.cardLevels(0);
       expect(level).to.equal(1);
       let uri = await clearanceCard.tokenURI(0);
-      expect(uri).to.equal("data:application/json;base64,eyJuYW1lIjoiU2VrZXIgRmFjdG9yeSBDbGVhcmFuY2UgQ2FyZCAwMDEiLCJkZXNjcmlwdGlvbiI6Ik1lbWJlcnNoaXAgdG8gdGhlIFNla2VyIEZhY3RvcnkgMDAxIERBTy4iLCJhdHRyaWJ1dGVzIjogW3sidHJhaXRfdHlwZSI6IkxldmVsIiwidmFsdWUiOiIxIn1dLCJpbWFnZSI6Imh0dHBzOi8vc2VrZXJmYWN0b3J5Lm15cGluYXRhLmNsb3VkL2lwZnMvUW1mUUZUNjdyZVd6ZDlES29odG1DOEVmZG5yUUZFbTdONGNIU0NZVDlzSHVaQyJ9");
+      expect(uri).to.equal("data:application/json;base64,eyJuYW1lIjoiU2VrZXIgRmFjdG9yeSAwMDEgLSBEQU8gTWVtYmVyIiwiZGVzY3JpcHRpb24iOiJNZW1iZXJzaGlwIHRvIHRoZSBTZWtlciBGYWN0b3J5IDAwMSBEQU8uIEhvbGRpbmcgdGhpcyBjYXJkIHNlY3VyZXMgeW91ciBtZW1iZXJzaGlwIHN0YXR1cyBhbmQgb2ZmZXJzIHZvdGluZyByaWdodHMgb24gY2VydGFpbiBwcm9wb3NhbHMgcmVsYXRlZCB0byB0aGUgMDAxIExvcyBBbmdlbGVzIEZhY3RvcnkuIExldmVsIHVwIHRoaXMgY2FyZCB0byByZWNlaXZlIG1vcmUgcGVya3MgYW5kIGdvdmVybmFuY2UgcmlnaHRzIHdpdGhpbiB0aGUgMDAxIERBTy4iLCJhdHRyaWJ1dGVzIjogW3sidHJhaXRfdHlwZSI6IkxldmVsIiwidmFsdWUiOiIxIn0seyJ0cmFpdF90eXBlIjoiTWVtYmVyc2hpcCBOdW1iZXIiLCJ2YWx1ZSI6IjAvMTAwMCJ9XSwiaW1hZ2UiOiJodHRwczovL3Nla2VyZmFjdG9yeS5teXBpbmF0YS5jbG91ZC9pcGZzL1FtZlFGVDY3cmVXemQ5REtvaHRtQzhFZmRuclFGRW03TjRjSFNDWVQ5c0h1WkMiLCJhbmltYXRpb25fdXJsIjoiaHR0cHM6Ly9zZWtlcmZhY3RvcnkubXlwaW5hdGEuY2xvdWQvaXBmcy9RbWZRRlQ2N3JlV3pkOURLb2h0bUM4RWZkbnJRRkVtN040Y0hTQ1lUOXNIdVpDIn0=");
       await clearanceCard.levelUpCard(0, 1);
       level = await clearanceCard.cardLevels(0);
       expect(level).to.equal(2);
       uri = await clearanceCard.tokenURI(0);
-      expect(uri).to.equal("data:application/json;base64,eyJuYW1lIjoiU2VrZXIgRmFjdG9yeSBDbGVhcmFuY2UgQ2FyZCAwMDEiLCJkZXNjcmlwdGlvbiI6Ik1lbWJlcnNoaXAgdG8gdGhlIFNla2VyIEZhY3RvcnkgMDAxIERBTy4iLCJhdHRyaWJ1dGVzIjogW3sidHJhaXRfdHlwZSI6IkxldmVsIiwidmFsdWUiOiIyIn1dLCJpbWFnZSI6Imh0dHBzOi8vc2VrZXJmYWN0b3J5Lm15cGluYXRhLmNsb3VkL2lwZnMvUW1RRkhXSkhGallNb2d0aTRYRXE5QkFMYnVvc2prZFhUSzVqR3lrZENLb0hVdCJ9");
+      expect(uri).to.equal("data:application/json;base64,eyJuYW1lIjoiU2VrZXIgRmFjdG9yeSAwMDEgLSBEQU8gTWVtYmVyIiwiZGVzY3JpcHRpb24iOiJNZW1iZXJzaGlwIHRvIHRoZSBTZWtlciBGYWN0b3J5IDAwMSBEQU8uIEhvbGRpbmcgdGhpcyBjYXJkIHNlY3VyZXMgeW91ciBtZW1iZXJzaGlwIHN0YXR1cyBhbmQgb2ZmZXJzIHZvdGluZyByaWdodHMgb24gY2VydGFpbiBwcm9wb3NhbHMgcmVsYXRlZCB0byB0aGUgMDAxIExvcyBBbmdlbGVzIEZhY3RvcnkuIExldmVsIHVwIHRoaXMgY2FyZCB0byByZWNlaXZlIG1vcmUgcGVya3MgYW5kIGdvdmVybmFuY2UgcmlnaHRzIHdpdGhpbiB0aGUgMDAxIERBTy4iLCJhdHRyaWJ1dGVzIjogW3sidHJhaXRfdHlwZSI6IkxldmVsIiwidmFsdWUiOiIyIn0seyJ0cmFpdF90eXBlIjoiTWVtYmVyc2hpcCBOdW1iZXIiLCJ2YWx1ZSI6IjAvMTAwMCJ9XSwiaW1hZ2UiOiJodHRwczovL3Nla2VyZmFjdG9yeS5teXBpbmF0YS5jbG91ZC9pcGZzL1FtUUZIV0pIRmpZTW9ndGk0WEVxOUJBTGJ1b3Nqa2RYVEs1akd5a2RDS29IVXQiLCJhbmltYXRpb25fdXJsIjoiaHR0cHM6Ly9zZWtlcmZhY3RvcnkubXlwaW5hdGEuY2xvdWQvaXBmcy9RbVFGSFdKSEZqWU1vZ3RpNFhFcTlCQUxidW9zamtkWFRLNWpHeWtkQ0tvSFV0In0=");
       await clearanceCard.levelUpCard(0, 1);
       level = await clearanceCard.cardLevels(0);
       expect(level).to.equal(3);
@@ -121,7 +121,7 @@ describe("ClearanceCard001", async () => {
 
     it("only owner can level up card", async () => {
       const { clearanceCard } = await baseSetup();
-      await clearanceCard.connect(user2).mint(1, {value: etherValueBatch})
+      await clearanceCard.connect(user2).mint(1, {value: etherValue})
       await expect(clearanceCard.connect(user2).levelUpCard(0, 1)).to.be.revertedWith("Ownable: caller is not the owner");
     });
 

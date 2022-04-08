@@ -7,25 +7,24 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "base64-sol/base64.sol";
 
-contract ClearanceCard001 is ERC721URIStorage, Ownable {
+contract TopClearanceCard is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
-    uint256 public totalEditions = 2000;
-    uint256 public daoReserve = 200;
-    uint256 public price = 0.15 ether;
+    uint256 public totalEditions = 1000;
+    uint256 public daoReserve = 100;
+    uint256 public price = 0.5 ether;
 
-    string[11] public URIs = [
-        "https://sekerfactory.mypinata.cloud/ipfs/QmUkuyxyLR9UskihBcKBpkxHV5PuzmuCNwp1jPty811PwQ",
-        "https://sekerfactory.mypinata.cloud/ipfs/QmfQFT67reWzd9DKohtmC8EfdnrQFEm7N4cHSCYT9sHuZC",
-        "https://sekerfactory.mypinata.cloud/ipfs/QmQFHWJHFjYMogti4XEq9BALbuosjkdXTK5jGykdCKoHUt",
-        "https://sekerfactory.mypinata.cloud/ipfs/QmSTC2gTipuWTPBxDvERZyp1Axoi7vgWPnrCX5yrHxTmKp",
-        "https://sekerfactory.mypinata.cloud/ipfs/QmU1XWHwSMx95dYTyYxx6JaU1i81TDzcWFGYFYNU2B1QVH",
-        "https://sekerfactory.mypinata.cloud/ipfs/QmTPmEBNJTVfDkAK7eDEZceqXzQ37co3QM1EssZKa1xdiB",
-        "https://sekerfactory.mypinata.cloud/ipfs/QmWii6TdmVJAic5b5qeUr2uXDbd5izdAD8EYk9382Ew7cB",
-        "https://sekerfactory.mypinata.cloud/ipfs/QmNYKTGxeMWo64KT8yzXzZLhMS2FR5dGQtLxkkkTHAJagi",
-        "https://sekerfactory.mypinata.cloud/ipfs/QmegFhaEwpioKbuGVo3cbQGvoc6FauMaKyczFEfXqtWAyj",
-        "https://sekerfactory.mypinata.cloud/ipfs/QmXkaN7DuXSF2X2hGF7tSEyTnDyMoCiMmvqLpvjh1ZSGEV",
-        "https://sekerfactory.mypinata.cloud/ipfs/QmR6wRWH9N3sNhuroBGFZMR37G4ME85q25tTYZfvaz3RxM"
+    string[10] public URIs = [
+        "https://sekerfactory.mypinata.cloud/ipfs/QmQ51zFLpCBhhi5h5sVr8Czi5CDaWWFvnvSkE9c1NexUiS",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmSSjyhK8nPZzFuPu33hiM8p6N4hYF615m1RbRimZuVY9e",
+        "https://sekerfactory.mypinata.cloud/ipfs/Qmf7z53NFeEHx5Gu4PaVC4NfEVZj5DAdBG4rfpojqB5wNd",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmS2GzvNaTSqFCfhT4NUiMLsHDtwDBfDFe4d6vYUh3KpHp",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmXo1WUbZSW1SUowZ2YG6ZZFyWJyxrEBu1JikLdsvj1gy2",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmY2j7Ngbv2zMqYoXww5fAa185eEXVK1pZng8eGUtC1LT6",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmU6EiKGXhKJnUp47Nri2NURzTY1ZFxtbh1tC5pJ1zNCB4",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmU1kMfLu19ovnoGRtedicHEC7GdcJoA72ASmQabAtdkKu",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmY6jMvEXoCBFQ42D3qymMftua2WXkfgUBpbcvBmyZsF89",
+        "https://sekerfactory.mypinata.cloud/ipfs/QmbExZ5rLx9i4TnGR8roNpCqy3iJFFpnFRLVpH8qcjftrb"
     ];
 
     mapping(uint256 => uint256) public cardLevels;
@@ -33,7 +32,7 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
     event CardLevelUp(uint256 indexed id, uint256 indexed levels, uint256 indexed newLevel);
     event CardLevelDown(uint256 indexed id, uint256 indexed levels, uint256 indexed newLevel);
 
-    constructor() ERC721("Seker Factory Clearance Cards 001", "SF001") {
+    constructor() ERC721("Seker Factory Top Clearance Cards", "SFTOP") {
         _transferOwnership(address(0x7735b940d673344845aC239CdDddE1D73b5d5627));
     }
 
@@ -86,6 +85,7 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
 
     function levelDownCard(uint256 _id, uint256 _levels) public onlyOwner {
         require(_exists(_id), "nonexistent id");
+        require(cardLevels[_id] - _levels > 0, "level must be greater than 0");
         cardLevels[_id] -= _levels;
         emit CardLevelDown(_id, _levels, cardLevels[_id]);
     }
@@ -94,6 +94,7 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
         require(_ids.length == _levels.length, "length missmatch");
         for(uint256 i=0; i<_ids.length; i++) {
             require(_exists(_ids[i]), "nonexistent id");
+            require(cardLevels[_ids[i]] - _levels[i] > 0, "level batch must be greater than 0");
             cardLevels[_ids[i]] -= _levels[i];
             emit CardLevelDown(_ids[i], _levels[i], cardLevels[_ids[i]]);
         }
@@ -117,8 +118,8 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
                     Base64.encode(
                         bytes(
                             abi.encodePacked(
-                                '{"name":"Seker Factory 001 - DAO Member",',
-                                '"description":"Membership to the Seker Factory 001 DAO. Holding this card secures your membership status and offers voting rights on proposals related to the 001 Los Angeles Factory and the 000 Metaverse Factory. Level up this card to receive more perks and governance rights within the 001 and 000 DAOs.",',
+                                '{"name":"Seker Factory Top Clearance - DAO Member",',
+                                '"description":"Top clearance membership to the Seker Factory DAOs. Holding this card secures your membership status and offers voting rights on proposals related to all factories. Level up this card to receive more perks and governance rights within the DAOs.",',
                                 '"attributes": ',
                                 '[',
                                 '{"trait_type":"Level","value":"',

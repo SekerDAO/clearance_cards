@@ -131,7 +131,7 @@ contract TopClearanceCard is ERC721URIStorage, Ownable {
                                 '"}',
                                 '],',
                                 '"image":"',
-                                URIs[level], 
+                                URIs[level], // can place other image here
                                 '",',
                                 '"animation_url":"',
                                 URIs[level],

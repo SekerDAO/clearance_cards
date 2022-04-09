@@ -34,7 +34,7 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
     event CardLevelDown(uint256 indexed id, uint256 indexed levels, uint256 indexed newLevel);
 
     constructor() ERC721("Seker Factory Clearance Cards 001", "SF001") {
-        _transferOwnership(address(0x7735b940d673344845aC239CdDddE1D73b5d5627));
+        //_transferOwnership(address(0x7735b940d673344845aC239CdDddE1D73b5d5627));
     }
 
     function mint(uint256 _amount) public payable {

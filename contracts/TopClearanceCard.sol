@@ -157,7 +157,7 @@ contract TopClearanceCard is ERC721URIStorage, Ownable {
         if (to != address(0) && from != address(0)) {
             // we are transfering
             // reset level
-            cardLevels[tokenId] = 0;
+            cardLevels[tokenId] = 1;
         }
     }
 

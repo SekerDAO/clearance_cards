@@ -33,7 +33,7 @@ contract TopClearanceCard is ERC721URIStorage, Ownable {
     event CardLevelDown(uint256 indexed id, uint256 indexed levels, uint256 indexed newLevel);
 
     constructor() ERC721("Seker Factory Top Clearance Cards", "SFTOP") {
-        _transferOwnership(address(0x7735b940d673344845aC239CdDddE1D73b5d5627));
+        //_transferOwnership(address(0x7735b940d673344845aC239CdDddE1D73b5d5627));
     }
 
     function mint(uint256 _amount) public payable {
@@ -47,7 +47,7 @@ contract TopClearanceCard is ERC721URIStorage, Ownable {
             uint256 newNFT = _tokenIds.current();
             _safeMint(msg.sender, newNFT);
             _tokenIds.increment();
-            cardLevels[newNFT] = 0;
+            cardLevels[newNFT] = 1;
         }
     }
 
@@ -103,6 +103,10 @@ contract TopClearanceCard is ERC721URIStorage, Ownable {
     function tokenURI(uint256 tokenId) public view override(ERC721URIStorage) returns (string memory) {
         require(_exists(tokenId), 'Clearance Cards: URI query for nonexistent token');
         return generateCardURI(tokenId);
+    }
+
+    function totalSupply() public view returns (uint256) {
+        return _tokenIds.current();
     }
 
     function generateCardURI(uint256 _id)

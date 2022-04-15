@@ -104,6 +104,10 @@ contract ClearanceCard001 is ERC721URIStorage, Ownable {
         return generateCardURI(tokenId);
     }
 
+    function totalSupply() public view returns (uint256) {
+        return _tokenIds.current();
+    }
+
     function generateCardURI(uint256 _id)
         public
         view

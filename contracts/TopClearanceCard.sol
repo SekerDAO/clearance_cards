@@ -10,7 +10,7 @@ import "base64-sol/base64.sol";
 contract TopClearanceCard is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
-    uint256 public totalEditions = 1000;
+    uint256 public totalMint = 1500;
     uint256 public daoReserve = 100;
     uint256 public price = 0.5 ether;
 
@@ -29,19 +29,26 @@ contract TopClearanceCard is ERC721URIStorage, Ownable {
 
     mapping(uint256 => uint256) public cardLevels;
 
-    event CardLevelUp(uint256 indexed id, uint256 indexed levels, uint256 indexed newLevel);
-    event CardLevelDown(uint256 indexed id, uint256 indexed levels, uint256 indexed newLevel);
+    event CardLevelUp(
+        uint256 indexed id,
+        uint256 indexed levels,
+        uint256 indexed newLevel
+    );
+    event CardLevelDown(
+        uint256 indexed id,
+        uint256 indexed levels,
+        uint256 indexed newLevel
+    );
 
     constructor() ERC721("Seker Factory Top Clearance Cards", "SFTOP") {
-        //_transferOwnership(address(0x7735b940d673344845aC239CdDddE1D73b5d5627));
+        //_transferOwnership(address(0x181e1ff49CAe7f7c419688FcB9e69aF2f93311da));
     }
 
     function mint(uint256 _amount) public payable {
         require(
-            Counters.current(_tokenIds) <= totalEditions,
+            Counters.current(_tokenIds) <= totalMint,
             "minting has reached its max"
         );
-        require(_amount <= 5, "can only mint 5 at a time");
         require(msg.value == price * _amount, "Incorrect eth amount");
         for (uint256 i; i <= _amount - 1; i++) {
             uint256 newNFT = _tokenIds.current();
@@ -53,7 +60,7 @@ contract TopClearanceCard is ERC721URIStorage, Ownable {
 
     function mintDAO(uint256 _amount) public onlyOwner {
         require(
-            Counters.current(_tokenIds) <= totalEditions,
+            Counters.current(_tokenIds) <= totalMint,
             "minting has reached its max"
         );
         for (uint256 i; i <= _amount - 1; i++) {
@@ -73,9 +80,12 @@ contract TopClearanceCard is ERC721URIStorage, Ownable {
         emit CardLevelUp(_id, _levels, cardLevels[_id]);
     }
 
-    function levelUpCardBatch(uint256[] memory _ids, uint256[] memory _levels) public onlyOwner {
+    function levelUpCardBatch(uint256[] memory _ids, uint256[] memory _levels)
+        public
+        onlyOwner
+    {
         require(_ids.length == _levels.length, "length missmatch");
-        for(uint256 i=0; i<_ids.length; i++) {
+        for (uint256 i = 0; i < _ids.length; i++) {
             require(cardLevels[_ids[i]] + _levels[i] <= 10, "max level is 10");
             require(_exists(_ids[i]), "nonexistent id");
             cardLevels[_ids[i]] += _levels[i];
@@ -90,18 +100,41 @@ contract TopClearanceCard is ERC721URIStorage, Ownable {
         emit CardLevelDown(_id, _levels, cardLevels[_id]);
     }
 
-    function levelDownCardBatch(uint256[] memory _ids, uint256[] memory _levels) public onlyOwner {
+    function levelDownCardBatch(uint256[] memory _ids, uint256[] memory _levels)
+        public
+        onlyOwner
+    {
         require(_ids.length == _levels.length, "length missmatch");
-        for(uint256 i=0; i<_ids.length; i++) {
+        for (uint256 i = 0; i < _ids.length; i++) {
             require(_exists(_ids[i]), "nonexistent id");
-            require(cardLevels[_ids[i]] - _levels[i] > 0, "level batch must be greater than 0");
+            require(
+                cardLevels[_ids[i]] - _levels[i] > 0,
+                "level batch must be greater than 0"
+            );
             cardLevels[_ids[i]] -= _levels[i];
             emit CardLevelDown(_ids[i], _levels[i], cardLevels[_ids[i]]);
         }
     }
 
-    function tokenURI(uint256 tokenId) public view override(ERC721URIStorage) returns (string memory) {
-        require(_exists(tokenId), 'Clearance Cards: URI query for nonexistent token');
+    function updateTotalMint(uint256 _newSupply) public onlyOwner {
+        require(_newSupply > _tokenIds.current(), "new supply less than already minted");
+        totalMint = _newSupply;
+    }
+
+    function updatePrice(uint256 _newPrice) public onlyOwner {
+        price = _newPrice;
+    }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721URIStorage)
+        returns (string memory)
+    {
+        require(
+            _exists(tokenId),
+            "Clearance Cards: URI query for nonexistent token"
+        );
         return generateCardURI(tokenId);
     }
 
@@ -109,11 +142,7 @@ contract TopClearanceCard is ERC721URIStorage, Ownable {
         return _tokenIds.current();
     }
 
-    function generateCardURI(uint256 _id)
-        public
-        view
-        returns (string memory)
-    {
+    function generateCardURI(uint256 _id) public view returns (string memory) {
         uint256 level = cardLevels[_id];
         return
             string(
@@ -125,20 +154,21 @@ contract TopClearanceCard is ERC721URIStorage, Ownable {
                                 '{"name":"Seker Factory Top Clearance - DAO Member",',
                                 '"description":"Top clearance membership to the Seker Factory DAOs. Holding this card secures your membership status and offers voting rights on proposals related to all factories. Level up this card to receive more perks and governance rights within the DAOs.",',
                                 '"attributes": ',
-                                '[',
+                                "[",
                                 '{"trait_type":"Level","value":"',
                                 Strings.toString(level),
                                 '"},',
                                 '{"trait_type":"Membership Number","value":"',
                                 Strings.toString(_id),
-                                '/1000'
+                                "/",
+                                Strings.toString(totalMint),
                                 '"}',
-                                '],',
+                                "],",
                                 '"image":"',
-                                URIs[level], // can place other image here
+                                URIs[level - 1], // can place other image here
                                 '",',
                                 '"animation_url":"',
-                                URIs[level],
+                                URIs[level - 1],
                                 '"}'
                             )
                         )
@@ -172,7 +202,7 @@ contract TopClearanceCard is ERC721URIStorage, Ownable {
             "Withdraw address cannot be zero"
         );
         require(address(this).balance >= 0, "Not enough eth");
-        (bool sent, ) = withdrawAddress.call{value:address(this).balance}("");
+        (bool sent, ) = withdrawAddress.call{value: address(this).balance}("");
         require(sent, "Failed to send Ether");
     }
 }
